@@ -4,7 +4,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.xs.AbstractDateTimeDV;
 
 /**
  * Create by Wisya on 2019/6/24 10:37 <p>
- * <p>
+ * <p> 队列, 是一种有序列表, 实际应用参考银行取号系统。
  * Description:
  * @since
  */
@@ -20,6 +20,22 @@ public class Queue {
         queue.add("B");
         queue.add("C");
         queue.add("D");
+        System.out.println(queue);
+        System.out.println("get:" + queue.get());
+//        System.out.println("get:" + queue.get());
+//        System.out.println("get:" + queue.get());
+//        System.out.println("get:" + queue.get());
+        queue.add("E");
+//        queue.add("F");
+//        queue.add("G");
+//        queue.add("H");
+        System.out.println(queue);
+        System.out.println("get:" + queue.get());
+        System.out.println("get:" + queue.get());
+        System.out.println(queue);
+        queue.add("H");
+        queue.add("I");
+        queue.add("J");
         System.out.println(queue);
     }
 
@@ -58,6 +74,10 @@ class ArrayQueue<T> {
         arr = new Object[maxSize];
     }
 
+    /**
+     * 会浪费最末尾一个空间.即实际的队列容量是 maxSize-1
+     * @return
+     */
     public boolean isFull() {
         return rear == maxSize - 1;
     }
@@ -115,7 +135,7 @@ class ArrayQueue<T> {
 }
 
 /**
- * 环形对象
+ * 环形队列
  * @param <T>
  */
 class CircularQueue<T> {
@@ -127,13 +147,17 @@ class CircularQueue<T> {
 
     public CircularQueue(int maxSize) {
         this.maxSize = maxSize;
-        front = -1;
-        rear = -1;
+        front = 0; // 队列头  指向头实际位置
+        rear = 0;  // 队列尾  指向尾实际位置
         arr = new Object[maxSize];
     }
 
     public boolean isFull() {
         return (rear + 1) % maxSize == front;
+//        if (rear == maxSize - 1) {
+//        } else {
+//            return (front - 1) == rear;
+//        }
     }
 
     public boolean isEmpty() {
@@ -142,12 +166,13 @@ class CircularQueue<T> {
 
     public boolean add(T e) {
         if (isFull()) {
-            System.out.println("队列已满, 添加失败.");
+            System.out.println(String.format("队列已满, 添加[%s]失败.", e));
             return false;
         }
         // 尾部添加
-        int i = ++rear % maxSize;
-        arr[i] = e;
+        arr[rear] = e;
+        // 形成环
+        rear = (rear + 1) % (maxSize);
         // 非原子操作,线程不安全
         return true;
     }
@@ -156,17 +181,22 @@ class CircularQueue<T> {
         if (isEmpty()) {
             return null;
         }
-        return (T) arr[++front % maxSize];
+        // 取当前结果
+        T result = (T) arr[front];
+        arr[front] = null;
+        // 头 +1
+        front = (front + 1) % maxSize;
+        return result;
     }
 
     //打印队列
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        for (int i = front + 1; i <= rear; i++) {
+        for (int i = 0; i < this.maxSize; i++) {
             builder.append(arr[i]).append(", ");
         }
-        if (!isEmpty()) {
+        if (builder.length() > 2) {
             // 去除尾部 ", "
             builder.delete(builder.length() - 2, builder.length());
         }
@@ -177,6 +207,8 @@ class CircularQueue<T> {
     // 迭代器:略
 
 }
+
+
 
 
 
