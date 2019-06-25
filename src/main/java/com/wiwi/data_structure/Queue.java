@@ -75,7 +75,6 @@ class ArrayQueue<T> {
     }
 
     /**
-     * 会浪费最末尾一个空间.即实际的队列容量是 maxSize-1
      * @return
      */
     public boolean isFull() {
@@ -152,12 +151,12 @@ class CircularQueue<T> {
         arr = new Object[maxSize];
     }
 
+    /**
+     * 会浪费最末尾一个空间.即实际的队列容量是 maxSize-1
+     * @return
+     */
     public boolean isFull() {
         return (rear + 1) % maxSize == front;
-//        if (rear == maxSize - 1) {
-//        } else {
-//            return (front - 1) == rear;
-//        }
     }
 
     public boolean isEmpty() {
